@@ -72,6 +72,8 @@
 
   /* ---------- state ---------- */
   function load() { try { return JSON.parse(localStorage.getItem('sd2-saved') || 'null'); } catch (e) { return null; } }
+  // ?fresh = demo link: forget any saved spot so the walkthrough always starts clean
+  if (/[?&]fresh\b/.test(location.search)) { try { localStorage.removeItem('sd2-saved'); } catch (e) { /* private mode */ } }
   function store(v) { try { if (v) localStorage.setItem('sd2-saved', JSON.stringify(v)); else localStorage.removeItem('sd2-saved'); } catch (e) { /* private mode */ } }
   var S = {
     mode: /today/.test(location.hash) ? 'today' : 'smart',
