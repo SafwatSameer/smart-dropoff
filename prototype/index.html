@@ -9,7 +9,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Hind+Siliguri:wght@500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.css">
-<link rel="stylesheet" href="style.css?v=202610270454">
+<link rel="stylesheet" href="style.css?v=202610270458">
 </head>
 <body data-mode="smart">
 
@@ -63,6 +63,7 @@
       <span class="thumbs2"><img src="../assets/pathao-today.jpg" alt=""><img src="../assets/uber-today.jpg" alt=""></span>
       <span>Pathao vs Uber, same place, same time. Unedited, from my phone.</span>
     </button>
+    <button type="button" class="sidecard" data-drawer="learn"><b>🧠 How the drop-off point is learned</b><span>And what happens on the first trip to a new place.</span></button>
     <button type="button" class="sidecard" data-drawer="scenes"><b>⚙ Behind the scenes</b><span>What the app decides at each step, in plain words.</span></button>
     <button type="button" class="sidecard" data-drawer="about"><b>i About this prototype</b><span>The problem, the fix, and what's real vs sample.</span></button>
     <a class="sidecard" href="../slide/"><b>▤ One-slide proposal</b><span>The business case for management.</span></a>
@@ -86,6 +87,34 @@
     </figure>
   </div>
   <p class="proofnote">These two are the only real app screenshots here. Everything inside the phone on the main page is my prototype.</p>
+</aside>
+
+<aside class="drawer wide" id="drawer-learn" aria-label="How the drop-off point is learned" hidden>
+  <div class="drawer-head"><div><b>How the drop-off point is learned</b><small>Simple rules, using data Pathao already records.</small></div><button type="button" class="x" data-close aria-label="Close">✕</button></div>
+  <div class="learn">
+    <h4>For places with past trips</h4>
+    <ol class="flow">
+      <li><i>1</i><b>A trip ends</b><span>The app already records where the rider ended the trip.</span></li>
+      <li><i>2</i><b>Passenger taps "Right spot?"</b><span>One tap after drop-off: 👍 or 👎. It's the question at the end of the ride.</span></li>
+      <li><i>3</i><b>Endings are grouped per place</b><span>Here: one group across the highway, one at the gate.</span></li>
+      <li><i>4</i><b>The best group becomes the drop-off point</b><span>The group with the most 👍. Refreshed regularly.</span></li>
+    </ol>
+    <div class="callout"><b>Why not just use distance?</b> The highway stop is only 89 m from the canteen, but it's on the wrong side of the road. Only the passenger knows that, so we ask.</div>
+
+    <h4>First trip to a new place</h4>
+    <ol class="flow two">
+      <li><i>1</i><b>Best guess from the map</b><span>The nearest road a bike can stop on, on the same side as the place. Not a flyover, not across a divider.</span></li>
+      <li><i>2</i><b>Passenger confirms it once</b><span>"Is this where you want to get off?" They can move the pin. Their trip becomes the first data point.</span></li>
+    </ol>
+
+    <h4>Safety rules</h4>
+    <ul>
+      <li>A learned point replaces the map's guess only after enough 👍 trips (for example, 10).</li>
+      <li>If 👎 taps pile up, the point is flagged and recalculated.</li>
+      <li>Busy places like offices, malls and hospitals already have many past trips, so most places start with data.</li>
+    </ul>
+    <p class="proofnote">In this prototype, the past trips (dots) are sample data.</p>
+  </div>
 </aside>
 
 <aside class="drawer" id="drawer-scenes" aria-label="Behind the scenes" hidden>
@@ -113,7 +142,7 @@
 
     <h3>The fix: Smart Drop-off</h3>
     <ol class="fix">
-      <li><b>A drop-off point for each place.</b> The route goes to where trips actually end well, not to the pin. It's learned from past trip endings: close to the place, with passengers tapping "right spot". New places start from the map's best guess and improve with every trip.</li>
+      <li><b>A drop-off point for each place.</b> The route goes to where trips actually end well, not to the pin. It's learned from past trip endings and passengers' "right spot?" taps. On the first trip to a new place, the map's best guess is confirmed by the passenger once. <button type="button" class="linkish" data-drawer="learn">How it learns →</button></li>
       <li><b>Your landmark, said once.</b> Instead of directing every rider at the turn, the passenger can add a landmark once, and the app remembers it.</li>
       <li><b>Rider gets both before accepting.</b> The drop-off point and the landmark come with the ride request. If a passenger picks a spot on a highway, the rider is reminded to pull over safely.</li>
     </ol>
@@ -147,7 +176,7 @@
 </aside>
 
 <script src="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
-<script src="data.js?v=202610270454"></script>
-<script src="app.js?v=202610270454"></script>
+<script src="data.js?v=202610270458"></script>
+<script src="app.js?v=202610270458"></script>
 </body>
 </html>

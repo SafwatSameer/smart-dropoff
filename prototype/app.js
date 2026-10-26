@@ -359,13 +359,13 @@
     locate: function () {
       var smart = S.mode === 'smart';
       var lines = smart
-        ? ['Your pin is on the canteen', 'Checking where past trips here ended', 'Drop-off point: where trips end well']
+        ? ['Your pin is on the canteen', 'Checking ' + TRIPS.length + ' past trips here (sample)', 'Drop-off point: where trips end well']
         : ['Your pin is on the canteen', 'Pin moved to the nearest road line: the expressway', 'Bikes can\'t use it, so the route ends on the highway'];
       return {
         top: top(false, smart ? 'Smart Drop-off' : 'What happens behind the map', 'POL Depo Canteen Noya Kutum Bari'),
         sheet: '<div class="grab"></div><h3>' + (smart ? 'Finding the drop-off point…' : 'Finding a route…') + '</h3>' +
           '<ol class="beats">' + lines.map(function (t, i) { return '<li class="' + (i < S.beat ? 'done' : i === S.beat ? 'now' : '') + (smart ? '' : ' bad') + '">' + t + '</li>'; }).join('') + '</ol>' +
-          (smart && S.beat >= 1 ? '<div class="legend"><span><i class="dot bad"></i>Ended across the road / "wrong spot"</span><span><i class="dot good"></i>Ended at the gate / "right spot"</span><em>Sample data</em></div>' : '')
+          (smart && S.beat >= 1 ? '<div class="legend"><span><i class="dot bad"></i>Ended across the road / "wrong spot"</span><span><i class="dot good"></i>Ended at the gate / "right spot"</span><em>Sample data</em></div><button type="button" class="learnlink" data-drawer="learn">How is this learned? · First trip?</button>' : '')
       };
     },
 
@@ -376,7 +376,7 @@
         top: top(true, 'Drop-off for', 'POL Depo Canteen Noya Kutum Bari'),
         sheet: '<div class="grab"></div>' +
           '<h3>Drop-off point: the canteen gate</h3>' +
-          '<p class="sub">Past trips that ended well stopped on the road under the expressway. Your route goes there, not to the pin.</p>' +
+          '<p class="sub">Past trips that ended well stopped on the road under the expressway. Your route goes there, not to the pin. <button type="button" class="learnlink inline" data-drawer="learn">How is this learned?</button></p>' +
           tipbox() +
           '<button class="btn" type="button" data-act="confirm">Confirm drop-off</button>' +
           '<button class="linkbtn" type="button" data-act="pick">Choose another spot</button>'
