@@ -2,10 +2,10 @@
 
 **Steal the Moment** assignment by Syed Safwat Sameer.
 
-**The moment:** a bike-ride drop-off at POL Depo Canteen Noya Kutum Bari, Dhaka Cantonment. Uber's route ends at the canteen. Pathao's pin lands on the Dhaka Elevated Expressway, so riders stop on New Airport Road (N3), across a divided highway. That happens on about half of my weekday office trips.
+**The moment:** a bike-ride drop-off at POL Depo Canteen Noya Kutum Bari, Dhaka Cantonment. Uber's route ends at the canteen. In Pathao the pin sits right on the canteen, yet the route ends on New Airport Road (N3), across a divided highway, because the Dhaka Elevated Expressway runs right above the canteen's road. That happens on about half of my weekday office trips.
 
 **The fix:** Smart Drop-off.
-1. **Picks a spot bikes can stop at.** A drop-off never lands on a road bikes can't use (expressways, ramps, no-motorcycle roads).
+1. **Ends the ride where bikes can stop.** The route never ends on a road bikes can't use (expressways, ramps, no-motorcycle roads), even when the pin is right.
 2. **Remembers your spot and tips.** One-tap confirm, plus an optional tip in the passenger's own words, saved for next trips.
 3. **Rider sees both before accepting.** Plus a short Bangla reminder, and a safety reminder if the spot is on a highway.
 

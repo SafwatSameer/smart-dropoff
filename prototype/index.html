@@ -33,7 +33,7 @@
   <aside class="side left" aria-label="What Smart Drop-off does">
     <p class="side-title">What it does</p>
     <ol class="does">
-      <li><b>Picks a spot bikes can stop at</b><span>Never on the expressway or other no-bike roads.</span></li>
+      <li><b>Ends the ride where bikes can stop</b><span>Not on the highway across the road, even when your pin is right.</span></li>
       <li><b>Remembers your spot and tips</b><span>Set it once. Used on every trip.</span></li>
       <li><b>Rider sees both before accepting</b><span>Plus a safety reminder for highways.</span></li>
     </ol>
@@ -75,15 +75,22 @@
   <div class="drawer-head"><div><b>About this prototype</b><small>Syed Safwat Sameer · Product Owner</small></div><button type="button" class="x" data-close aria-label="Close">✕</button></div>
   <div class="about">
     <h3>The problem</h3>
-    <p>Booking a bike to <b>POL Depo Canteen Noya Kutum Bari</b> (Dhaka Cantonment). Uber's route ends at the canteen. Pathao's pin lands on the <b>Dhaka Elevated Expressway</b>, which runs right above the canteen's road. Bikes aren't allowed on the expressway, so riders stop on the <b>highway (New Airport Road)</b> and the passenger has to cross it on foot. This happens on about half of my office trips.</p>
+    <p>Booking a bike to <b>POL Depo Canteen Noya Kutum Bari</b> (Dhaka Cantonment). Uber's route ends at the canteen. In Pathao, I can put the pin right on the canteen, but the route still ends on the <b>highway (New Airport Road)</b>, across the road. The <b>Dhaka Elevated Expressway</b> runs right above the canteen's road, and bikes aren't allowed on it. This happens on about half of my office trips.</p>
     <div class="shots">
       <figure><img src="../assets/pathao-today.jpg" alt="Pathao screenshot: pin on the expressway"><figcaption><span class="dot bad"></span>Pathao: pin on the expressway</figcaption></figure>
       <figure><img src="../assets/uber-today.jpg" alt="Uber screenshot: route ends at the canteen"><figcaption><span class="dot good"></span>Uber: route ends at the canteen</figcaption></figure>
     </div>
 
+    <h3>Why not just fix the map or GPS?</h3>
+    <ul>
+      <li><b>The pin is already right.</b> Try "Today": the pin sits exactly on the canteen, and the ride still ends on the highway. Better GPS doesn't change that.</li>
+      <li><b>Maps show roads, not the way in.</b> Which side the gate is on, which small road to take: regulars know this, maps don't. A one-time tip passes it to every rider.</li>
+      <li><b>Riders end up calling.</b> Today the rider phones to ask where to stop. With the spot and tip sent ahead, that call isn't needed.</li>
+    </ul>
+
     <h3>The fix: Smart Drop-off</h3>
     <ol class="fix">
-      <li><b>Better map logic.</b> The drop-off never lands on a road where bikes can't stop. It moves to the nearest road they can use.</li>
+      <li><b>Better map logic.</b> The ride never ends on a road bikes can't use. It ends on the nearest road they can use, close to your pin.</li>
       <li><b>Saved spot and tips.</b> The passenger confirms the spot once and can add a tip in their own words. The app asks to remember both for next time.</li>
       <li><b>Better coordination.</b> The rider gets the spot and the tip with the ride request, before accepting. If the spot is on a highway, the rider gets a short safety reminder.</li>
     </ol>
@@ -99,7 +106,7 @@
     <h3>Real vs sample</h3>
     <ul>
       <li><b>Real:</b> the map, roads and routes (OpenStreetMap and OSRM), plus my own screenshots.</li>
-      <li><b>Sample:</b> rider name, fare and timings.</li>
+      <li><b>Sample:</b> rider name, fare, timings and the rider's phone call.</li>
     </ul>
 
     <h3>Map key</h3>

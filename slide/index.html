@@ -119,7 +119,7 @@ h1 em{font-style:normal;color:var(--good)}
             <span class="tag">Pathao</span>
             <span class="ring" style="left:calc(46.25% - 31px);top:136px"></span>
           </div>
-          <p><b>Pin on the Elevated Expressway.</b> Route ends on the highway, opposite the canteen.</p>
+          <p><b>Pin on the canteen, route on the highway.</b> It ends opposite the canteen.</p>
         </div>
         <div class="shot good">
           <div class="img" style="background-image:url(../assets/uber-today.jpg)">
@@ -138,7 +138,7 @@ h1 em{font-style:normal;color:var(--good)}
     <!-- 2. Root cause -->
     <section class="col">
       <h2><span class="n">2</span>Why it happens</h2>
-      <h3>Pathao snaps the pin to a road bikes can't use</h3>
+      <h3>The pin is right. The route ends on the wrong road.</h3>
       <div class="diagram">
         <svg viewBox="0 0 552 246" width="100%" role="img" aria-label="Plan view: New Airport Road N3 at top; Elevated Expressway directly above DOHS Bypass Road in the middle; canteen below. Pathao pin on the expressway, rider stop on N3, correct gate on DOHS Bypass Road.">
           <defs>
@@ -174,8 +174,8 @@ h1 em{font-style:normal;color:var(--good)}
             <path d="M0 0 C-12 -16 -14 -22 -14 -27 a14 14 0 0 1 28 0 c0 5 -2 11 -14 27z" fill="#d92d3a" stroke="#fff" stroke-width="2"/>
             <circle cy="-27" r="5" fill="#fff"/>
           </g>
-          <rect x="196" y="126" width="86" height="21" rx="4" fill="#fff"/>
-          <text x="239" y="141" text-anchor="middle" font-size="12.5" font-weight="800" fill="#b91c1c">Pathao pin</text>
+          <rect x="170" y="126" width="112" height="21" rx="4" fill="#fff"/>
+          <text x="226" y="141" text-anchor="middle" font-size="12.5" font-weight="800" fill="#b91c1c">Route snaps here</text>
           <!-- correct gate -->
           <line x1="452" y1="148" x2="452" y2="192" stroke="#0e9f6e" stroke-width="3"/>
           <g transform="translate(452,140)"><circle r="12" fill="#0e9f6e" stroke="#fff" stroke-width="2"/><path d="M-5 0 L-1.5 4 L5.5 -4" stroke="#fff" stroke-width="2.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/></g>
@@ -184,7 +184,7 @@ h1 em{font-style:normal;color:var(--good)}
         </svg>
       </div>
       <ul class="why">
-        <li>The expressway deck sits <b>almost exactly above</b> the canteen's road: 18 m vs 17 m away. On a flat map they are one line, and Pathao's pin lands on the <b>expressway</b>.</li>
+        <li>The expressway deck sits <b>almost exactly above</b> the canteen's road: 18 m vs 17 m away. On a flat map they are one line, so the route's end snaps to the <b>expressway</b>.</li>
         <li>Bikes can't use it, so navigation sends the rider to the <b>nearest legal road, N3</b>. The rider stops there, across the highway.</li>
         <li>The right road costs the rider only <b>+52 m and ~40 s</b>: one left turn off N3. Miss that turn and it's a 2.5 km detour.</li>
       </ul>
@@ -196,8 +196,8 @@ h1 em{font-style:normal;color:var(--good)}
       <h2><span class="n">3</span>The fix: Smart Drop-off</h2>
       <h3>Better GPS logic on the backend, plus coordination between passenger and rider</h3>
       <div class="feat">
-        <div class="f"><div class="ic">A</div><div><div class="t">Pick a spot bikes can stop at <span class="who">Backend</span></div>
-          <p>Never put a drop-off on a road bikes can't use: expressways, ramps, no-motorcycle roads. Move it to the nearest road they can use.</p></div></div>
+        <div class="f"><div class="ic">A</div><div><div class="t">End the ride where bikes can stop <span class="who">Backend</span></div>
+          <p>Even when the pin is right, never end the route on a road bikes can't use: expressways, ramps, no-motorcycle roads. Use the nearest road they can.</p></div></div>
         <div class="f"><div class="ic">B</div><div><div class="t">Saved spot + your own tip <span class="who">Passenger</span></div>
           <p>The passenger confirms the spot with one tap and can add a tip in their own words. The app asks to remember both, so next time there's no question.</p></div></div>
         <div class="f"><div class="ic">C</div><div><div class="t">Rider sees it before accepting <span class="who">Rider</span></div>
@@ -213,7 +213,7 @@ h1 em{font-style:normal;color:var(--good)}
       <ul>
         <li><b>It protects commuters, our most frequent riders.</b> A daily route that fails half the time teaches them to open Uber first. At 2 trips a day, that's ~22 bad drop-offs a month for one person.</li>
         <li><b>It's small and proven.</b> It uses map data and trip GPS we already have, step ① ships silently on the server, and food delivery apps already save rider notes per address.</li>
-        <li><b>It works everywhere, not just here.</b> Every venue next to a flyover or expressway has the same bug.</li>
+        <li><b>Better GPS alone won't fix it.</b> The pin is already right. The route end and the way in are the problem, at every venue beside a flyover or expressway.</li>
       </ul>
     </div>
     <div class="blk m">

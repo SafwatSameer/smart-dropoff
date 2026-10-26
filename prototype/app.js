@@ -51,13 +51,13 @@
     var exp = [nearestOn(D.roads.expressway, p), nearestOn(D.roads.expresswayRamp, p)].sort(function (a, b) { return a.d - b.d; })[0];
     var out;
     if (road.d <= near) out = { level: 'ok', kind: 'road', snap: road.pt, tag: '✓ Bikes can stop here', msg: 'On the road under the expressway. A few steps to the canteen.' };
-    else if (hw.d <= near) out = { level: 'warn', kind: 'hw', snap: hw.pt, tag: '! Highway', msg: 'This is on the highway. Your rider will be reminded to stop safely and call you if needed.' };
+    else if (hw.d <= near) out = { level: 'warn', kind: 'hw', snap: hw.pt, tag: '! Highway', msg: 'This is on the highway. Your rider will be reminded to pull over safely.' };
     else if (exp.d <= near) return { level: 'bad', kind: 'exp', snap: null, tag: '✕ Expressway: no bikes', msg: 'Bikes can\'t go on the expressway. Move the map to the road below it.' };
     else {
       var to = road.d <= hw.d ? road : hw;
       out = road.d <= hw.d
         ? { level: 'ok', kind: 'road', snap: to.pt, tag: '✓ Nearest road', msg: 'Not on a road, so your rider will stop on the nearest road, under the expressway.' }
-        : { level: 'warn', kind: 'hw', snap: to.pt, tag: '! Highway', msg: 'Nearest road is the highway. Your rider will be reminded to stop safely.' };
+        : { level: 'warn', kind: 'hw', snap: to.pt, tag: '! Highway', msg: 'Nearest road is the highway. Your rider will be reminded to pull over safely.' };
     }
     if (dist(out.snap, D.canteen) > 150) return { level: 'bad', kind: 'far', snap: null, tag: '✕ Too far', msg: 'That\'s too far from the canteen. Move the map closer.' };
     return out;
@@ -87,11 +87,11 @@
   }
   function renderLog() {
     $('#rule').innerHTML = S.mode === 'smart'
-      ? '<b>Smart rule:</b> put the drop-off on the nearest road where a bike can stop. Skip expressways and roads closed to bikes. Send the spot and the passenger\'s tip to the rider with the ride request.'
-      : '<b>Today\'s rule:</b> put the pin on the nearest road line on the map. Here that line is the expressway, which runs right above the canteen\'s road.';
+      ? '<b>Smart rule:</b> end the route on the nearest road where a bike can stop. Skip expressways and roads closed to bikes. Send the spot and the passenger\'s tip to the rider with the ride request.'
+      : '<b>Today\'s rule:</b> end the route on the road line nearest to the pin. Here that line is the expressway, right above the canteen\'s road. The pin is correct; the route is not.';
     $('#log').innerHTML = S.log.length
       ? S.log.map(function (l) { return '<li class="' + l.kind + '">' + l.html + '</li>'; }).join('')
-      : '<li class="empty">Tap <b>Office</b> on the phone to start. Each decision the app makes will show up here.</li>';
+      : '<li class="empty">Tap <b>Where to?</b> on the phone to start. Each decision the app makes will show up here.</li>';
     var b = $('#badge');
     b.hidden = !S.unread; b.textContent = S.unread;
   }
@@ -145,7 +145,7 @@
     var b = new maplibregl.LngLatBounds();
     points.forEach(function (p) { b.extend(ll(p)); });
     map.setPadding({ top: 0, bottom: 0, left: 0, right: 0 });
-    map.fitBounds(b, { padding: { top: 120, bottom: sheetH() + 40, left: 56, right: 56 }, maxZoom: maxZoom || 16.8, duration: 650 });
+    map.fitBounds(b, { padding: { top: 120, bottom: sheetH() + 64, left: 56, right: 56 }, maxZoom: maxZoom || 16.8, duration: 650 });
   }
 
   function routeFor() {
@@ -154,7 +154,18 @@
     var last = base[base.length - 1];
     return dist(last, S.spot.pt) < 3 ? base : base.concat([S.spot.pt]);
   }
-  function expLabelPoint() { return D.roads.expressway[Math.floor(D.roads.expressway.length * 0.62)]; }
+  // a point on the expressway ~70 m north-east of the canteen, so the label fits a close-up view
+  var EXP_LABEL = (function () {
+    var path = D.roads.expressway, cum = cumulative(path), best = path[0], bd = Infinity;
+    for (var s = 0; s < cum[cum.length - 1]; s += 5) {
+      var p = pointAt(path, cum, s).pt;
+      if (p[0] < D.canteen[0]) continue;
+      var e = Math.abs(dist(p, D.canteen) - 70);
+      if (e < bd) { bd = e; best = p; }
+    }
+    return best;
+  })();
+  function expLabelPoint() { return EXP_LABEL; }
 
   function drawMap() {
     if (!ready) return;
@@ -165,7 +176,7 @@
     $('#centerpin').hidden = st !== 'pick';
     map.dragPan[st === 'trip' ? 'disable' : 'enable']();
 
-    if (st === 'home') {
+    if (st === 'home' || st === 'lookup') {
       setLine('route', null);
       addMarker(el('me'), D.start);
       addMarker(poi(), D.canteen, 'left');
@@ -175,11 +186,10 @@
       setLine('route', null);
       setLine('nostop', D.roads.expressway);
       addMarker(el('roadtag', 'Expressway · no bikes'), expLabelPoint());
-      addMarker(poi(), D.canteen, 'left');
-      if (S.spot.source === 'auto') addMarker(pin('#e0343f', 'Old pin', 'bad side', true), D.todayPin, 'bottom');
-      addMarker(pin(S.spot.kind === 'road' ? '#0e9f6e' : '#d97706', 'Drop-off', S.spot.kind === 'road' ? 'good' : ''), S.spot.pt, 'bottom');
+      addMarker(pin('#0f172a', 'Your pin', 'rside'), D.canteen, 'bottom');
+      addMarker(pin(S.spot.kind === 'road' ? '#0e9f6e' : '#d97706', 'Rider stops here', S.spot.kind === 'road' ? 'good' : ''), S.spot.pt, 'bottom');
       setLine('walk', [S.spot.pt, D.canteen]);
-      return fit([D.todayPin, S.spot.pt, D.canteen], 17.4);
+      return fit([S.spot.pt, D.canteen, expLabelPoint()], 18.2);
     }
     if (st === 'pick') {
       setLine('route', null);
@@ -194,10 +204,12 @@
     var path = routeFor();
     map.setPaintProperty('route', 'line-color', smart ? '#0e9f6e' : '#0f172a');
     setLine('route', path);
-    addMarker(poi(), D.canteen, 'left');
-
-    if (smart && st !== 'done') addMarker(pin(S.spot.kind === 'road' ? '#0e9f6e' : '#d97706', S.spot.en, 'good'), S.spot.pt, 'bottom');
-    else addMarker(pin('#e0343f', st === 'done' ? '' : 'POL Depo Ca…antonment'), D.todayPin, 'bottom');
+    if (smart) {
+      addMarker(poi(), D.canteen, 'left');
+      if (st !== 'done') addMarker(pin(S.spot.kind === 'road' ? '#0e9f6e' : '#d97706', S.spot.en, 'good'), S.spot.pt, 'bottom');
+    } else {
+      addMarker(pin('#e0343f', 'Your pin: POL Depo Canteen'), D.canteen, 'bottom');
+    }
 
     if (st === 'trip') return; // camera follows the bike
     if (st === 'done') {
@@ -211,7 +223,7 @@
       map.setPaintProperty('walk', 'line-color', '#e0343f');
       setLine('walk', [D.n3Stop, D.canteen]);
       addMarker(el('mk', '<div class="x">✕</div><div class="tag bad">You are here</div>'), D.n3Stop, 'center');
-      return fit([D.n3Stop, D.canteen, D.todayPin], 17.4);
+      return fit([D.n3Stop, D.canteen], 17.6);
     }
     map.setPaintProperty('walk', 'line-color', '#0e9f6e');
     addMarker(el('me'), D.start);
@@ -246,6 +258,7 @@
     back: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>',
     search: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>',
     office: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M4 21V5l8-3v19M12 8h8v13M8 8h.01M8 12h.01M8 16h.01M16 12h.01M16 16h.01M2 21h20"/></svg>',
+    fork: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M7 2v8a2 2 0 002 2v10M11 2v8a2 2 0 01-2 2M17 2c-1.5 0-3 2-3 6s1.5 5 3 5v9"/></svg>',
     home: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M3 11l9-7 9 7v10H3z"/><path d="M9 21v-6h6v6"/></svg>',
     bike: '<svg width="40" height="28" viewBox="0 0 46 34" fill="none" stroke-linecap="round" stroke-linejoin="round"><circle cx="10" cy="24" r="7" stroke="#0f172a" stroke-width="3"/><circle cx="36" cy="24" r="7" stroke="#0f172a" stroke-width="3"/><path d="M10 24l7-11h11l8 11M28 13l3-6h5" stroke="#e0343f" stroke-width="3"/></svg>'
   };
@@ -253,34 +266,60 @@
     return (back ? '<button class="back" type="button" data-act="back" aria-label="Back">' + I.back + '</button>' : '') +
       (title ? '<div class="dest"><small>' + sub + '</small><b>' + title + '</b></div>' : '');
   }
+  function tipbox() {
+    return '<div class="tipbox"><div class="tl"><label for="tip">Tip for your rider <span>(optional)</span></label>' +
+      (S.tip ? '' : '<button type="button" class="example" data-act="example">Use example</button>') + '</div>' +
+      '<textarea id="tip" maxlength="120" placeholder="Which road, which gate, a landmark…">' + esc(S.tip) + '</textarea></div>' +
+      '<label class="remember"><input type="checkbox" id="remember"' + (S.remember ? ' checked' : '') + '>Remember spot and tip for my next trips</label>';
+  }
+  function results() {
+    var q = (S.q || '').trim().toLowerCase();
+    var hit = !q || ['pol', 'depo', 'canteen', 'noya', 'kutum', 'bari', 'cantonment'].some(function (w) { return w.indexOf(q) === 0 || q.indexOf(w) > -1; });
+    if (!hit) return '<p class="sub" style="margin-top:12px">No results. Try "POL Depo".</p>';
+    var saved = S.mode === 'smart' && S.saved;
+    return '<div class="lbl">' + (q ? 'Results' : 'Suggested') + '</div>' +
+      '<button class="place attn" type="button" data-act="place"><span class="pi">' + I.fork + '</span><span class="grow"><b>POL Depo Canteen Noya Kutum Bari</b><small>Restaurant · Dhaka Cantonment</small></span>' +
+      (saved ? '<span class="chip ok">✓ Spot' + (S.saved.tip ? ' & tip' : '') + ' saved</span>' : '<span class="tapme">Tap</span>') + '</button>';
+  }
   function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
 
   var screens = {
     home: function () {
       var saved = S.mode === 'smart' && S.saved;
       return { top: '', sheet: '<div class="grab"></div><h3>Good morning</h3>' +
-        '<button class="search" type="button" data-act="office">' + I.search + 'Where to?</button>' +
-        '<div class="lbl">Saved places</div>' +
-        '<button class="place attn" type="button" data-act="office"><span class="pi">' + I.office + '</span><span class="grow"><b>Office</b><small>POL Depo Canteen Noya Kutum Bari</small></span>' +
-        (saved ? '<span class="chip ok">✓ Spot' + (S.saved.tip ? ' & tip' : '') + ' saved</span>' : '<span class="tapme">Tap</span>') + '</button>' };
+        '<button class="search attn" type="button" data-act="search">' + I.search + '<span class="grow">Where to?</span><span class="tapme">Tap</span></button>' +
+        (saved ? '<p class="sub" style="margin:10px 2px 0">✓ Your drop-off spot' + (S.saved.tip ? ' and tip' : '') + ' for POL Depo Canteen are saved.</p>' : '') };
+    },
+
+    lookup: function () {
+      var saved = S.mode === 'smart' && S.saved;
+      return { top: top(true, 'Where to?', 'Search a place'),
+        sheet: '<div class="grab"></div>' +
+          '<label class="searchbox">' + I.search + '<input id="q" type="search" autocomplete="off" placeholder="Search a place" value="' + esc(S.q || '') + '" aria-label="Search a place"></label>' +
+          '<div id="results">' + results() + '</div>' };
     },
 
     spot: function () {
       var auto = S.spot.source === 'auto';
       var hw = S.spot.kind === 'hw';
+      if (auto) return {
+        top: top(true, 'Drop-off for', 'POL Depo Canteen Noya Kutum Bari'),
+        sheet: '<div class="grab"></div>' +
+          '<h3>Your rider will stop at the canteen gate</h3>' +
+          '<p class="sub">Your pin is right. But the nearest road is the expressway above, and bikes can\'t use it. So the ride ends on the road below, at the gate.</p>' +
+          tipbox() +
+          '<button class="btn" type="button" data-act="confirm">Confirm drop-off</button>' +
+          '<button class="linkbtn" type="button" data-act="pick">Choose another spot</button>'
+      };
       return {
         top: top(true, 'Drop-off for', 'POL Depo Canteen Noya Kutum Bari'),
         sheet: '<div class="grab"></div>' +
           '<h3>' + (auto ? 'Drop-off moved to the canteen gate' : 'Drop-off: ' + S.spot.en) + '</h3>' +
-          '<p class="sub">' + (auto ? 'Your pin was on the expressway, where bikes can\'t stop. The gate is on the road right below it.'
-            : hw ? 'This spot is on the highway. Your rider will be reminded to stop safely and call you if needed.'
+          '<p class="sub">' + (hw ? 'This spot is on the highway. Your rider will be reminded to pull over safely.'
             : 'On the road under the expressway. Bikes can stop here.') + '</p>' +
-          '<div class="tipbox"><div class="tl"><label for="tip">Tip for your rider <span>(optional)</span></label>' +
-          (S.tip ? '' : '<button type="button" class="example" data-act="example">Use example</button>') + '</div>' +
-          '<textarea id="tip" maxlength="120" placeholder="e.g. Take the small road under the expressway">' + esc(S.tip) + '</textarea></div>' +
-          '<label class="remember"><input type="checkbox" id="remember"' + (S.remember ? ' checked' : '') + '>Remember spot and tip for my next trips</label>' +
+          tipbox() +
           '<button class="btn" type="button" data-act="confirm">Confirm drop-off</button>' +
-          '<button class="linkbtn" type="button" data-act="pick">Move the pin instead</button>'
+          '<button class="linkbtn" type="button" data-act="pick">Choose another spot</button>'
       };
     },
 
@@ -299,9 +338,9 @@
       var rows = smart
         ? '<div class="row"><span class="ri good">✓</span><span class="grow"><b>Drop-off: ' + S.spot.en + '</b><small>' + S.spot.desc + (S.usedSaved ? ' · saved' : '') + '</small></span><button class="act" type="button" data-act="edit">Edit</button></div>' +
           (S.tip ? '<div class="row"><span class="ri">💬</span><span class="grow"><b>Tip for rider</b><small>' + esc(S.tip) + '</small></span></div>' : '')
-        : '<div class="row"><span class="ri">📍</span><span class="grow"><b>Drop-off: POL Depo Ca…antonment</b><small>Pin set by the map</small></span></div>';
+        : '<div class="row"><span class="ri">📍</span><span class="grow"><b>Drop-off: POL Depo Canteen</b><small>Pin placed on the canteen</small></span></div>';
       return {
-        top: top(true, 'Reach in ~8 mins', smart ? S.spot.en + ' · POL Depo Canteen' : 'POL Depo Ca…antonment'),
+        top: top(true, 'Reach in ~8 mins', smart ? S.spot.en + ' · POL Depo Canteen' : 'POL Depo Canteen Noya Kutum Bari'),
         sheet: '<div class="grab"></div><h3>Choose a ride</h3>' +
           '<div class="ride">' + I.bike + '<span class="grow"><b>Bike</b><small>Quick and affordable</small></span><span class="fare">৳136</span></div>' +
           '<div class="rows">' + rows + '<div class="row"><span class="ri">৳</span><span class="grow"><b>Cash</b></span></div></div>' +
@@ -317,7 +356,7 @@
     found: function () {
       var smart = S.mode === 'smart';
       return {
-        top: top(false, 'Rider found', smart ? S.spot.en + ' · POL Depo Canteen' : 'POL Depo Ca…antonment'),
+        top: top(false, 'Rider found', smart ? S.spot.en + ' · POL Depo Canteen' : 'POL Depo Canteen Noya Kutum Bari'),
         sheet: '<div class="grab"></div>' +
           '<div class="driver"><div class="avatar">K</div><div class="grow"><b>Karim</b> <span style="color:#f59e0b">★</span> 4.9<small>Bike · DHAKA METRO-HA 12-3456</small></div><div class="eta">2 min<small>away</small></div></div>' +
           (smart ? '<div class="note good" style="margin-top:12px"><span class="ni">✓</span><span>Karim got your drop-off spot' + (S.tip ? ' and tip' : '') + ' with the ride request.</span></div>' +
@@ -330,7 +369,7 @@
     trip: function () {
       var smart = S.mode === 'smart';
       return {
-        top: top(false, 'On trip with Karim', smart ? S.spot.en + ' · POL Depo Canteen' : 'POL Depo Ca…antonment'),
+        top: top(false, 'On trip with Karim', smart ? S.spot.en + ' · POL Depo Canteen' : 'POL Depo Canteen Noya Kutum Bari'),
         sheet: '<div class="grab"></div><h3>On the way</h3>' +
           '<div class="progress"><i id="prog"></i></div>' +
           '<div class="trip-line"><span id="tripLeft">Starting…</span><b id="tripEta"></b></div>'
@@ -341,10 +380,10 @@
       var smart = S.mode === 'smart';
       if (!smart) {
         return {
-          top: top(false, 'Trip complete', 'POL Depo Ca…antonment'),
+          top: top(false, 'Trip complete', 'POL Depo Canteen Noya Kutum Bari'),
           sheet: '<div class="grab"></div><h3>You have arrived</h3>' +
-            '<p class="sub">That\'s what the app says. But you\'re on the highway, and the canteen is across the road.</p>' +
-            '<div class="vs"><div class="t"><b>Today</b>Dropped on the highway. Cross it on foot.</div><div class="s"><b>Smart Drop-off</b>Dropped at the canteen gate.</div></div>' +
+            '<p class="sub">That\'s what the app says. Your pin was exactly on the canteen, but you\'re on the highway, across the road.</p>' +
+            '<div class="vs"><div class="t"><b>Today</b>Pin right, ride ends on the highway. Rider had to call.</div><div class="s"><b>Smart Drop-off</b>Ride ends at the gate. Your tip shows the way.</div></div>' +
             '<button class="btn" type="button" data-act="toSmart" style="background:var(--good)">See the fix →</button>'
         };
       }
@@ -357,6 +396,7 @@
           '<p class="sub">' + (hw ? 'On the highway, as you chose.' : 'A few steps to the canteen. No road to cross.') + '</p>' +
           '<div class="lbl" style="margin-top:4px">Was this the right spot?</div>' +
           '<div class="thumbs"><button type="button" data-fb="yes" aria-pressed="' + (S.feedback === 'yes') + '">👍 Yes</button><button type="button" data-fb="no" aria-pressed="' + (S.feedback === 'no') + '">👎 No</button></div>' +
+          (S.tip && !hw ? '<div class="note good" style="margin-top:10px"><span class="ni">💬</span><span>No call needed. Your tip told Karim the way in.</span></div>' : '') +
           savedLine +
           '<button class="btn" type="button" data-act="finish">Done</button>' +
           '<button class="linkbtn" type="button" data-act="toToday">Compare with today\'s app</button>'
@@ -399,8 +439,8 @@
     bikeMarker = new maplibregl.Marker({ element: el('bike', BIKE) }).setLngLat(ll(path[0])).addTo(map);
     if (ready) map.setPadding({ top: 120, bottom: sheetH() + 20, left: 0, right: 0 });
     var zoom = 15.6, d = 0, last = performance.now(), stage = 0;
-    log('', smart ? '<b>Trip started</b> towards ' + S.spot.en.toLowerCase() + '. Karim\'s navigation ends at the spot itself, not at the nearest main road.'
-                  : '<b>Trip started</b> towards the pin on the expressway. Bikes can\'t use the expressway, so navigation ends on the nearest road they can use: the highway.');
+    log('', smart ? '<b>Trip started</b> towards ' + S.spot.en.toLowerCase() + '. Karim\'s navigation ends at the spot itself, not on the highway.'
+                  : '<b>Trip started.</b> Navigation ends on the highway, the nearest road a bike can use to the expressway point.');
     anim = { t: 0 };
     (function tick() {
       if (!anim) return;
@@ -415,6 +455,11 @@
       var p = $('#prog'); if (p) p.style.width = (d / total * 100).toFixed(1) + '%';
       var tl = $('#tripLeft'); if (tl) tl.textContent = left > 40 ? Math.round(left / 10) * 10 + ' m to go' : 'Arriving';
       var te = $('#tripEta'); if (te) te.textContent = Math.max(1, Math.ceil(left / 1390 * 8)) + ' min';
+      if (!smart && stage === 0 && left < 560) {
+        stage = 1;
+        banner('call', '📞', 'Karim is calling…', '<span class="bn">"ভাই, কোন দিকে নামবেন? হাইওয়েতেই নামিয়ে দিই?"</span><small>"Which side? Shall I drop you on the highway?"</small>');
+        log('warn', '<b>Rider called the passenger</b> to ask where to stop. The map gave him the canteen, but not a road he could use to reach it.');
+      }
       if (smart && turnD) {
         if (stage === 0 && d > turnD - 380) { stage = 1; banner('good', '↰', 'Karim turns off the highway here', 'Onto the road under the expressway, as your tip says.'); log('good', '<b>Turn reminder sent to Karim</b> just before the turn off the highway.'); }
         if (stage === 1 && d > turnD + 30) { stage = 2; banner('good', '✓', 'Off the highway', 'Heading straight to your drop-off spot.'); }
@@ -430,13 +475,13 @@
       if (S.remember && !S.usedSaved) {
         S.saved = { spot: S.spot, tip: S.tip };
         store(S.saved);
-        log('good', '<b>Saved to "Office":</b> the spot' + (S.tip ? ' and the tip' : '') + '. Next time they\'re used automatically.');
+        log('good', '<b>Saved for this place:</b> the spot' + (S.tip ? ' and the tip' : '') + '. Next time they\'re used automatically.');
       }
       go('done');
     } else {
       log('bad', '<b>Trip ended on the highway</b>, across the road from the canteen. Nothing flags this as a wrong drop-off.');
       go('done');
-      banner('bad', '!', 'You\'re on the highway', 'The canteen is across the road. You\'ll have to cross it on foot.');
+      banner('bad', '!', 'Your pin was right. The ride wasn\'t.', 'You\'re on the highway. The canteen is across the road.');
     }
   }
 
@@ -448,7 +493,7 @@
       '<span class="req">নতুন রাইড · New ride</span>' +
       '<div class="rcard spot"><div class="t">Drop-off spot</div><div class="bn">' + s.bn + ' · ' + s.bnDesc + '</div><small>' + s.en + ' · ' + s.desc + '</small></div>' +
       (S.tip ? '<div class="rcard tip"><div class="t">Passenger\'s tip</div><div class="q">“' + esc(S.tip) + '”</div></div>' : '') +
-      (hw ? '<div class="rcard warn"><div class="t">Safety reminder</div><div class="bn">হাইওয়েতে সাবধানে থামুন। দরকার হলে যাত্রীকে ফোন করুন।</div><small>Highway: stop safely. Call the passenger if unsure.</small></div>'
+      (hw ? '<div class="rcard warn"><div class="t">Safety reminder</div><div class="bn">হাইওয়ে: রাস্তার পাশে নিরাপদে থামুন।</div><small>Highway: pull over safely at the side of the road.</small></div>'
           : '<div class="rcard warn"><div class="t">Reminder</div><div class="bn">এক্সপ্রেসওয়েতে নয়, নিচের রাস্তায় নামাবেন।</div><small>Not on the expressway. Drop off on the road below.</small></div>') +
       '<button class="raccept" type="button" data-act="closeRider">গ্রহণ করুন<small>Accept</small></button>';
     r.hidden = false;
@@ -458,7 +503,7 @@
   /* ---------- actions ---------- */
   function restart() {
     stopAnim(); $('#rider').hidden = true; banner(null);
-    S.step = 'home'; S.spot = AUTO_SPOT; S.tip = ''; S.remember = true; S.usedSaved = false; S.pick = null; S.feedback = null; S.log = []; S.unread = 0;
+    S.step = 'home'; S.q = ''; S.spot = AUTO_SPOT; S.tip = ''; S.remember = true; S.usedSaved = false; S.pick = null; S.feedback = null; S.log = []; S.unread = 0;
     render();
   }
   function setMode(m) {
@@ -470,27 +515,30 @@
   function readTip() { var t = $('#tip'); if (t) S.tip = t.value.trim(); var r = $('#remember'); if (r) S.remember = r.checked; }
 
   var actions = {
-    office: function () {
-      log('', '<b>Destination:</b> POL Depo Canteen Noya Kutum Bari.');
+    search: function () { go('lookup'); setTimeout(function () { var q = $('#q'); if (q) q.focus(); }, 50); },
+    office: function () { actions.place(); },
+    place: function () {
+      log('', '<b>Pin placed exactly on POL Depo Canteen.</b> The map and GPS got this part right.');
       if (S.mode === 'today') {
-        log('bad', '<b>Pin placed on the nearest road line: the Elevated Expressway.</b> On a flat map, the expressway and the canteen\'s road below it look like the same line.');
+        log('bad', '<b>Route end = nearest road line to the pin:</b> the Elevated Expressway, which runs right above the canteen\'s road. On a flat map they look like one line.');
+        log('bad', '<b>Bikes can\'t use the expressway,</b> so the route ends on the nearest road they can use: the highway, across from the canteen.');
         return go('ride');
       }
       if (S.saved) {
         S.spot = S.saved.spot; S.tip = S.saved.tip || ''; S.usedSaved = true;
-        log('good', '<b>Saved "Office" spot found.</b> Using it' + (S.tip ? ' with your tip' : '') + '. No questions asked.');
+        log('good', '<b>Saved spot found for this place.</b> Using it' + (S.tip ? ' with your tip' : '') + '. No questions asked.');
         return go('ride');
       }
-      log('warn', '<b>The pin would land on the Elevated Expressway.</b> Bikes aren\'t allowed there.');
-      log('good', '<b>Moved the drop-off to the nearest road a bike can use:</b> the road right below, at the canteen gate.');
+      log('warn', '<b>Nearest road line is the Elevated Expressway.</b> Bikes can\'t use it, so it\'s skipped.');
+      log('good', '<b>Route now ends on the nearest road a bike can use:</b> the road right below, at the canteen gate.');
       S.spot = AUTO_SPOT;
       go('spot');
     },
     back: function () {
       stopAnim();
       if (S.step === 'pick') return go('spot');
-      if (S.step === 'spot') return go('home');
-      if (S.step === 'ride') return go(S.mode === 'smart' && !S.usedSaved ? 'spot' : 'home');
+      if (S.step === 'spot') return go('lookup');
+      if (S.step === 'ride') return go(S.mode === 'smart' && !S.usedSaved ? 'spot' : 'lookup');
       go('home');
     },
     example: function () { var t = $('#tip'); if (t) { t.value = TIP_EXAMPLE; t.focus(); } var b = document.querySelector('[data-act=example]'); if (b) b.remove(); },
@@ -555,6 +603,11 @@
     if (m) setMode(m.dataset.mode);
   });
   document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeDrawers(); });
+  document.addEventListener('input', function (e) {
+    if (e.target.id !== 'q') return;
+    S.q = e.target.value;
+    $('#results').innerHTML = results();
+  });
   $('#restart').addEventListener('click', restart);
   $('#forget').addEventListener('click', function () { S.saved = null; store(null); closeDrawers(); restart(); });
   window.addEventListener('resize', function () { if (S.step === 'pick') placeCenterPin(); });
