@@ -196,14 +196,14 @@ h1 em{font-style:normal;color:var(--good)}
       <h2><span class="n">3</span>The fix: Smart Drop-off</h2>
       <h3>Better GPS logic on the backend, plus coordination between passenger and rider</h3>
       <div class="feat">
-        <div class="f"><div class="ic">A</div><div><div class="t">Access-aware snapping <span class="who">Backend</span></div>
-          <p>Never snap a drop-off to a road where bikes can't stop: elevated roads, ramps, motorways, no-motorcycle roads. Prefer the road the venue's entrance faces.</p></div></div>
-        <div class="f"><div class="ic">B</div><div><div class="t">Confirm your gate, once <span class="who">Passenger</span></div>
-          <p>If the pin is on a no-stop road, one card asks for the right entrance and shows the walk. It's saved to "Office", so it's never asked again.</p></div></div>
-        <div class="f"><div class="ic">C</div><div><div class="t">Gate shown to the rider <span class="who">Rider</span></div>
-          <p>The rider sees the gate pin, the approach road and a note in Bangla before accepting. If they end the trip far from the gate, the passenger is asked to confirm.</p></div></div>
+        <div class="f"><div class="ic">A</div><div><div class="t">Pick a spot bikes can stop at <span class="who">Backend</span></div>
+          <p>Never put a drop-off on a road bikes can't use: expressways, ramps, no-motorcycle roads. Move it to the nearest road they can use.</p></div></div>
+        <div class="f"><div class="ic">B</div><div><div class="t">Saved spot + your own tip <span class="who">Passenger</span></div>
+          <p>The passenger confirms the spot with one tap and can add a tip in their own words. The app asks to remember both, so next time there's no question.</p></div></div>
+        <div class="f"><div class="ic">C</div><div><div class="t">Rider sees it before accepting <span class="who">Rider</span></div>
+          <p>The spot and the tip come with the ride request, plus a short Bangla reminder. If the spot is on a highway, the rider is reminded to stop safely.</p></div></div>
       </div>
-      <div class="rollout"><span class="s">① Backend fix</span><span class="ar">→</span><span class="s l">② Gate card + rider pin</span><span class="ar">→</span><span class="s l2">③ Learn from trips</span></div>
+      <div class="rollout"><span class="s">① Backend fix</span><span class="ar">→</span><span class="s l">② Saved spot + tips</span><span class="ar">→</span><span class="s l2">③ Learn from trips</span></div>
     </section>
   </div>
 
@@ -212,7 +212,7 @@ h1 em{font-style:normal;color:var(--good)}
       <h4>Why management should approve it</h4>
       <ul>
         <li><b>It protects commuters, our most frequent riders.</b> A daily route that fails half the time teaches them to open Uber first. At 2 trips a day, that's ~22 bad drop-offs a month for one person.</li>
-        <li><b>It's small and low-risk.</b> It uses road attributes and trip GPS we already have, and step ① ships silently on the server.</li>
+        <li><b>It's small and proven.</b> It uses map data and trip GPS we already have, step ① ships silently on the server, and food delivery apps already save rider notes per address.</li>
         <li><b>It works everywhere, not just here.</b> Every venue next to a flyover or expressway has the same bug.</li>
       </ul>
     </div>
