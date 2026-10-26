@@ -9,7 +9,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Hind+Siliguri:wght@500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.css">
-<link rel="stylesheet" href="style.css?v=202610270350">
+<link rel="stylesheet" href="style.css?v=202610270415">
 </head>
 <body data-mode="smart">
 
@@ -23,6 +23,7 @@
     <button type="button" data-mode="smart"><span class="dot good"></span>With Smart Drop-off</button>
   </div>
   <div class="bar-actions">
+    <button type="button" class="pillbtn proofbtn" data-drawer="proof"><span class="ico">📷</span><span class="pl">Real screenshots</span></button>
     <button type="button" class="pillbtn" data-drawer="scenes"><span class="ico">⚙</span><span class="pl">Behind the scenes</span><i class="badge" id="badge" hidden></i></button>
     <button type="button" class="pillbtn" data-drawer="about"><span class="ico">i</span><span class="pl">About</span></button>
     <button type="button" class="pillbtn icon-only" id="restart" title="Restart demo" aria-label="Restart demo">↺</button>
@@ -57,6 +58,11 @@
   </section>
 
   <aside class="side right" aria-label="More details">
+    <button type="button" class="sidecard proofcard" data-drawer="proof">
+      <b>📷 REAL SCREENSHOTS · FACT CHECK</b>
+      <span class="thumbs2"><img src="../assets/pathao-today.jpg" alt=""><img src="../assets/uber-today.jpg" alt=""></span>
+      <span>Pathao vs Uber, same place, same time. Unedited, from my phone.</span>
+    </button>
     <button type="button" class="sidecard" data-drawer="scenes"><b>⚙ Behind the scenes</b><span>What the app decides at each step, in plain words.</span></button>
     <button type="button" class="sidecard" data-drawer="about"><b>i About this prototype</b><span>The problem, the fix, and what's real vs sample.</span></button>
     <a class="sidecard" href="../slide/"><b>▤ One-slide proposal</b><span>The business case for management.</span></a>
@@ -64,6 +70,23 @@
 </main>
 
 <div class="scrim" id="scrim" hidden></div>
+
+<aside class="drawer wide" id="drawer-proof" aria-label="Real screenshots" hidden>
+  <div class="drawer-head"><div><b>Real screenshots: Pathao vs Uber</b><small>Taken on my phone at 9:25 a.m. Same destination: POL Depo Canteen Noya Kutum Bari. Unedited.</small></div><button type="button" class="x" data-close aria-label="Close">✕</button></div>
+  <div class="proof">
+    <figure class="shot-bad">
+      <figcaption><span class="tagline">PATHAO</span><b>Route ends on the highway</b><small>Destination: the canteen. The route line ends on the highway, across the road.</small></figcaption>
+      <a href="../assets/pathao-today.jpg" target="_blank" rel="noopener"><img src="../assets/pathao-today.jpg" alt="Real Pathao screenshot: route ends on the highway near POL Depo Canteen"></a>
+      <a class="full" href="../assets/pathao-today.jpg" target="_blank" rel="noopener">Open full size ↗</a>
+    </figure>
+    <figure class="shot-good">
+      <figcaption><span class="tagline">UBER</span><b>Route ends at the canteen</b><small>Same place, same time. The route turns off the highway.</small></figcaption>
+      <a href="../assets/uber-today.jpg" target="_blank" rel="noopener"><img src="../assets/uber-today.jpg" alt="Real Uber screenshot: route ends at POL Depo Canteen"></a>
+      <a class="full" href="../assets/uber-today.jpg" target="_blank" rel="noopener">Open full size ↗</a>
+    </figure>
+  </div>
+  <p class="proofnote">These two are the only real app screenshots here. Everything inside the phone on the main page is my prototype.</p>
+</aside>
 
 <aside class="drawer" id="drawer-scenes" aria-label="Behind the scenes" hidden>
   <div class="drawer-head"><div><b>Behind the scenes</b><small>What the app decides, step by step</small></div><button type="button" class="x" data-close aria-label="Close">✕</button></div>
@@ -124,7 +147,7 @@
 </aside>
 
 <script src="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
-<script src="data.js?v=202610270350"></script>
-<script src="app.js?v=202610270350"></script>
+<script src="data.js?v=202610270415"></script>
+<script src="app.js?v=202610270415"></script>
 </body>
 </html>
