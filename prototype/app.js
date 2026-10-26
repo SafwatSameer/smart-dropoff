@@ -633,7 +633,7 @@
     },
     confirm: function () {
       readTip();
-      log('good', '<b>Drop-off confirmed:</b> ' + S.spot.en.toLowerCase() + (S.tip ? ', with a tip for the rider' : '') + '.' + (S.remember ? ' The app will remember it after this trip.' : ''));
+      log('good', '<b>Drop-off confirmed:</b> ' + S.spot.en.toLowerCase() + (S.tip ? ', with your landmark for the rider' : '') + '.' + (S.remember ? ' The app will remember it after this trip.' : ''));
       go('ride');
     },
     edit: function () { S.usedSaved = false; go('spot'); },
