@@ -303,3 +303,22 @@ body[data-mode="smart"] .bike{background:var(--good)}
 .banner small{display:block;font-size:11.5px;color:#94a3b8;margin-top:1px}
 @keyframes ring{0%,100%{transform:rotate(0)}25%{transform:rotate(-12deg)}75%{transform:rotate(12deg)}}
 .mk .tag.rside{left:calc(50% + 10px);top:auto;bottom:8px;transform:none}
+.k-pin{width:12px;height:12px;border-radius:50%;background:var(--ink);box-shadow:0 0 0 2px #fff,0 0 0 3px var(--ink)}
+.k-good{width:11px;height:11px;border-radius:50%;background:var(--good);opacity:.8}
+.k-bad{width:11px !important;height:11px !important;box-shadow:none !important;opacity:.8}
+
+/* finding-the-route steps */
+.beats{list-style:none;margin:6px 0 4px;padding:0;display:grid;gap:9px;counter-reset:b}
+.beats li{counter-increment:b;display:flex;gap:10px;align-items:flex-start;font-size:13px;line-height:1.4;color:#a3adbb}
+.beats li::before{content:counter(b);flex:none;width:22px;height:22px;border-radius:50%;border:1.5px solid #d5dbe3;display:grid;place-items:center;font-size:11px;font-weight:800;color:#a3adbb;background:#fff}
+.beats li.now{color:var(--ink);font-weight:600}
+.beats li.now::before{border-color:var(--ink);color:var(--ink);animation:pulse2 1s ease-in-out infinite}
+.beats li.done{color:var(--ink)}
+.beats li.done::before{content:"✓";background:var(--good);border-color:var(--good);color:#fff}
+.beats li.done.bad::before{content:"!";background:var(--bad);border-color:var(--bad)}
+.beats li.done.bad:first-child::before{content:"✓";background:var(--ink);border-color:var(--ink)}
+@keyframes pulse2{50%{box-shadow:0 0 0 4px rgba(15,23,42,.12)}}
+.legend{display:flex;flex-wrap:wrap;gap:6px 12px;align-items:center;margin-top:10px;font-size:11.5px;color:var(--body)}
+.legend span{display:flex;align-items:center}
+.legend .dot{width:9px;height:9px;margin-right:5px}
+.legend em{font-style:normal;font-size:10.5px;font-weight:700;color:#92400e;background:var(--warn-bg);border-radius:999px;padding:2px 8px}
