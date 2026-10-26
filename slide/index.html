@@ -1,0 +1,264 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Smart Drop-off Proposal</title>
+<meta name="description" content="One-slide proposal: fix Pathao's drop-off pin at POL Depo Canteen, Dhaka — by Syed Safwat Sameer.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#0b1220; --body:#1e293b; --muted:#5b6678; --line:#e3e8ef; --panel:#f6f8fb;
+  --bad:#d92d3a; --bad-bg:#fdecee; --good:#0e9f6e; --good-bg:#e7f6ef; --warn:#b45309; --warn-bg:#fff4e0;
+  --accent:#1d4ed8;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:#d9dee6;font-family:Inter,system-ui,"Segoe UI",Arial,sans-serif;color:var(--body)}
+.viewer{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:16px;gap:14px}
+.frame{width:calc(1920px * var(--s,0.5));height:calc(1080px * var(--s,0.5));box-shadow:0 20px 60px rgba(15,23,42,.25);border-radius:6px;overflow:hidden;background:#fff}
+.slide{width:1920px;height:1080px;transform:scale(var(--s,0.5));transform-origin:0 0;background:#fff;position:relative;padding:38px 60px 0}
+.toolbar{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+.toolbar a{font:600 14px Inter,sans-serif;color:#fff;background:#0b1220;text-decoration:none;padding:10px 16px;border-radius:999px}
+.toolbar a.alt{background:#fff;color:#0b1220;border:1px solid #c5ccd6}
+@page{size:1920px 1080px;margin:0}
+@media print{html,body{background:#fff}.viewer{padding:0;display:block;min-height:0}.frame{box-shadow:none;border-radius:0;width:1920px;height:1080px}.slide{transform:none}.toolbar{display:none}}
+body.export{background:#fff}
+body.export .viewer{padding:0;display:block;min-height:0}
+body.export .frame{box-shadow:none;border-radius:0}
+body.export .toolbar{display:none}
+
+/* header */
+.head{display:flex;justify-content:space-between;align-items:flex-start;gap:40px}
+.kicker{font-size:15px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--accent)}
+h1{font-size:42px;line-height:1.12;font-weight:800;color:var(--ink);letter-spacing:-.02em;margin-top:8px;max-width:1350px}
+h1 em{font-style:normal;color:var(--good)}
+.sub{font-size:19px;color:var(--muted);margin-top:8px;max-width:1350px;line-height:1.4}
+.sub b{color:var(--body)}
+.byline{text-align:right;font-size:15px;color:var(--muted);line-height:1.5;white-space:nowrap;padding-top:4px}
+.byline b{display:block;font-size:18px;color:var(--ink)}
+
+/* columns */
+.cols{display:grid;grid-template-columns:540px 600px minmax(0,1fr);gap:28px;margin-top:18px;height:596px}
+.col{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:20px 22px;display:flex;flex-direction:column;min-height:0}
+.col h2{font-size:15px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);display:flex;align-items:center;gap:10px}
+.col h2 .n{width:26px;height:26px;border-radius:50%;background:var(--ink);color:#fff;display:grid;place-items:center;font-size:14px;letter-spacing:0}
+.col h3{font-size:21px;color:var(--ink);font-weight:750;margin-top:6px;line-height:1.2}
+
+/* evidence */
+.shots{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:14px}
+.shot{position:relative}
+.shot .img{height:272px;border-radius:12px;overflow:hidden;border:3px solid var(--bad);position:relative;background-size:cover;background-position:top center}
+.shot.good .img{border-color:var(--good)}
+.tag{position:absolute;top:10px;left:10px;font-size:14px;font-weight:800;padding:5px 10px;border-radius:999px;color:#fff;background:var(--bad)}
+.good .tag{background:var(--good)}
+.ring{position:absolute;width:62px;height:62px;border-radius:50%;border:4px solid var(--bad);box-shadow:0 0 0 4px rgba(255,255,255,.85)}
+.good .ring{border-color:var(--good)}
+.shot p{font-size:15.5px;line-height:1.35;margin-top:8px;color:var(--body)}
+.shot p b{color:var(--ink)}
+.stat{margin-top:auto;display:flex;align-items:center;gap:16px;background:#fff;border:1px solid var(--line);border-radius:12px;padding:12px 16px}
+.stat .big{white-space:nowrap;font-size:40px;font-weight:800;color:var(--bad);letter-spacing:-.03em;line-height:1}
+.stat div:last-child{font-size:16px;line-height:1.35}
+
+/* diagram */
+.diagram{margin-top:10px;background:#fff;border:1px solid var(--line);border-radius:12px;padding:6px}
+.why{list-style:none;margin-top:12px;display:grid;gap:8px}
+.why li{font-size:16.5px;line-height:1.38;padding-left:22px;position:relative}
+.why li::before{content:"";position:absolute;left:4px;top:8px;width:9px;height:9px;border-radius:2px;background:var(--ink)}
+.why b{color:var(--ink)}
+.hyp{font-size:13.5px;color:var(--muted);margin-top:auto;padding-top:6px}
+
+/* fix */
+.feat{display:grid;gap:12px;margin-top:12px}
+.f{display:grid;grid-template-columns:44px 1fr;gap:14px;background:#fff;border:1px solid var(--line);border-radius:12px;padding:13px 16px}
+.f .ic{width:44px;height:44px;border-radius:12px;background:var(--good-bg);color:var(--good);display:grid;place-items:center;font-weight:800;font-size:20px}
+.f .t{font-size:19px;font-weight:750;color:var(--ink)}
+.f .who{font-size:12.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--good);margin-left:6px}
+.f p{font-size:16px;line-height:1.38;margin-top:3px}
+.rollout{margin-top:auto;display:flex;align-items:center;gap:8px;font-size:15px;flex-wrap:nowrap;padding-top:10px}
+.rollout .s{background:var(--ink);color:#fff;border-radius:8px;padding:6px 9px;font-size:14px;font-weight:600;white-space:nowrap}
+.rollout .s.l{background:#334155}.rollout .s.l2{background:#64748b}
+.rollout .ar{color:var(--muted);font-weight:700}
+
+/* bottom */
+.band{display:grid;grid-template-columns:1.12fr 1fr 1fr;gap:28px;margin-top:18px}
+.blk h4{font-size:15px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--ink);padding-bottom:8px;border-bottom:3px solid var(--ink);margin-bottom:10px}
+.blk.q h4{border-color:var(--warn);color:var(--warn)}
+.blk.m h4{border-color:var(--accent);color:var(--accent)}
+.blk ul{list-style:none;display:grid;gap:6px}
+.blk li{font-size:15.5px;line-height:1.34;padding-left:18px;position:relative}
+.blk li::before{content:"›";position:absolute;left:2px;top:-1px;font-weight:800;color:var(--muted)}
+.blk li b{color:var(--ink)}
+.foot{position:absolute;left:60px;right:60px;bottom:14px;display:flex;justify-content:space-between;font-size:12.5px;color:var(--muted)}
+.foot a{color:var(--accent);font-weight:600;text-decoration:none}
+</style>
+</head>
+<body>
+<div class="viewer">
+<div class="frame">
+<div class="slide" id="slide">
+
+  <div class="head">
+    <div>
+      <div class="kicker">One-slide proposal · Rides · Drop-off accuracy</div>
+      <h1>Pathao drops commuters on the wrong road. <em>Smart Drop-off</em> fixes the last 100 metres.</h1>
+      <p class="sub">Same office, same 9:25 a.m. request: <b>Uber's route ends at the canteen</b>. <b>Pathao's ends across a divided highway</b>, on about half of my weekday trips.</p>
+    </div>
+    <div class="byline"><b>Syed Safwat Sameer</b>Product Owner<br>27 October 2026</div>
+  </div>
+
+  <div class="cols">
+    <!-- 1. Evidence -->
+    <section class="col">
+      <h2><span class="n">1</span>The moment we're losing</h2>
+      <h3>POL Depo Canteen Noya Kutum Bari, Dhaka</h3>
+      <div class="shots">
+        <div class="shot">
+          <div class="img" style="background-image:url(../assets/pathao-today.jpg)">
+            <span class="tag">Pathao</span>
+            <span class="ring" style="left:calc(46.25% - 31px);top:136px"></span>
+          </div>
+          <p><b>Pin on the Elevated Expressway.</b> Route ends on the highway, opposite the canteen.</p>
+        </div>
+        <div class="shot good">
+          <div class="img" style="background-image:url(../assets/uber-today.jpg)">
+            <span class="tag">Uber</span>
+            <span class="ring" style="left:calc(43.2% - 31px);top:205px"></span>
+          </div>
+          <p><b>Route turns off the highway</b> and ends at the canteen.</p>
+        </div>
+      </div>
+      <div class="stat">
+        <div class="big">~1 in 2</div>
+        <div>of my office trips end on the highway. I cross a divided road on foot, or I switch to Uber.</div>
+      </div>
+    </section>
+
+    <!-- 2. Root cause -->
+    <section class="col">
+      <h2><span class="n">2</span>Why it happens</h2>
+      <h3>Pathao snaps the pin to a road bikes can't use</h3>
+      <div class="diagram">
+        <svg viewBox="0 0 552 246" width="100%" role="img" aria-label="Plan view: New Airport Road N3 at top; Elevated Expressway directly above DOHS Bypass Road in the middle; canteen below. Pathao pin on the expressway, rider stop on N3, correct gate on DOHS Bypass Road.">
+          <defs>
+            <pattern id="hatch" width="9" height="9" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="9" height="9" fill="#334155"/><line x1="0" y1="0" x2="0" y2="9" stroke="#475569" stroke-width="4"/></pattern>
+          </defs>
+          <!-- N3 -->
+          <text x="8" y="15" font-size="12.5" font-weight="800" fill="#334155" letter-spacing=".4">NEW AIRPORT ROAD (N3) · divided highway</text>
+          <rect x="0" y="22" width="552" height="58" fill="#cbd5e1"/>
+          <line x1="0" y1="51" x2="552" y2="51" stroke="#fff" stroke-width="3" stroke-dasharray="14 10"/>
+          <!-- expressway over DOHS -->
+          <text x="8" y="104" font-size="12.5" font-weight="800" fill="#334155" letter-spacing=".4">ELEVATED EXPRESSWAY (overhead) · no motorcycles</text>
+          <rect x="0" y="112" width="552" height="46" fill="url(#hatch)"/>
+          <text x="8" y="176" font-size="12.5" font-weight="800" fill="#0e9f6e" letter-spacing=".4">BARIDHARA DOHS MAIN RD (ground level, below)</text>
+          <!-- canteen -->
+          <rect x="336" y="192" width="156" height="46" rx="7" fill="#fff" stroke="#0b1220" stroke-width="2"/>
+          <text x="414" y="220" text-anchor="middle" font-size="14" font-weight="800" fill="#0b1220">POL Depo Canteen</text>
+          <!-- 31 m bracket -->
+          <line x1="512" y1="192" x2="512" y2="135" stroke="#0b1220" stroke-width="1.6"/>
+          <line x1="506" y1="192" x2="518" y2="192" stroke="#0b1220" stroke-width="1.6"/>
+          <line x1="506" y1="135" x2="518" y2="135" stroke="#0b1220" stroke-width="1.6"/>
+          <rect x="498" y="160" width="54" height="20" rx="4" fill="#fff" stroke="#cbd5e1"/>
+          <text x="525" y="174" text-anchor="middle" font-size="12" font-weight="800" fill="#0b1220">17–18 m</text>
+          <!-- rider stop on N3 + walk -->
+          <path d="M372 66 L372 112" stroke="#d92d3a" stroke-width="2" stroke-dasharray="4 4"/>
+          <path d="M372 158 L400 192" stroke="#d92d3a" stroke-width="2" stroke-dasharray="4 4"/>
+          <g transform="translate(372,66)"><circle r="12" fill="#d92d3a" stroke="#fff" stroke-width="2"/><path d="M-5 -5 L5 5 M5 -5 L-5 5" stroke="#fff" stroke-width="2.6" stroke-linecap="round"/></g>
+          <rect x="236" y="56" width="122" height="21" rx="4" fill="#fff"/>
+          <text x="297" y="71" text-anchor="middle" font-size="12.5" font-weight="800" fill="#b91c1c">Rider stops here</text>
+          <rect x="390" y="56" width="152" height="21" rx="4" fill="#fff"/>
+          <text x="466" y="71" text-anchor="middle" font-size="12" font-weight="700" fill="#334155">89 m + highway to cross</text>
+          <!-- pathao pin on expressway -->
+          <g transform="translate(300,154)">
+            <path d="M0 0 C-12 -16 -14 -22 -14 -27 a14 14 0 0 1 28 0 c0 5 -2 11 -14 27z" fill="#d92d3a" stroke="#fff" stroke-width="2"/>
+            <circle cy="-27" r="5" fill="#fff"/>
+          </g>
+          <rect x="196" y="126" width="86" height="21" rx="4" fill="#fff"/>
+          <text x="239" y="141" text-anchor="middle" font-size="12.5" font-weight="800" fill="#b91c1c">Pathao pin</text>
+          <!-- correct gate -->
+          <line x1="452" y1="148" x2="452" y2="192" stroke="#0e9f6e" stroke-width="3"/>
+          <g transform="translate(452,140)"><circle r="12" fill="#0e9f6e" stroke="#fff" stroke-width="2"/><path d="M-5 0 L-1.5 4 L5.5 -4" stroke="#fff" stroke-width="2.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/></g>
+          <rect x="356" y="122" width="82" height="21" rx="4" fill="#fff"/>
+          <text x="397" y="137" text-anchor="middle" font-size="12.5" font-weight="800" fill="#0e9f6e">Right gate</text>
+        </svg>
+      </div>
+      <ul class="why">
+        <li>The expressway deck sits <b>almost exactly above</b> the canteen's road: 18 m vs 17 m away. On a flat map they are one line, and Pathao's pin lands on the <b>expressway</b>.</li>
+        <li>Bikes can't use it, so navigation sends the rider to the <b>nearest legal road, N3</b>. The rider stops there, across the highway.</li>
+        <li>The right road costs the rider only <b>+52 m and ~40 s</b>: one left turn off N3. Miss that turn and it's a 2.5 km detour.</li>
+      </ul>
+      <p class="hyp">Hypothesis built from OpenStreetMap road data and OSRM routes. Confirm with Pathao's geocoder and trip logs.</p>
+    </section>
+
+    <!-- 3. Fix -->
+    <section class="col">
+      <h2><span class="n">3</span>The fix: Smart Drop-off</h2>
+      <h3>Better GPS logic on the backend, plus coordination between passenger and rider</h3>
+      <div class="feat">
+        <div class="f"><div class="ic">A</div><div><div class="t">Access-aware snapping <span class="who">Backend</span></div>
+          <p>Never snap a drop-off to a road where bikes can't stop: elevated roads, ramps, motorways, no-motorcycle roads. Prefer the road the venue's entrance faces.</p></div></div>
+        <div class="f"><div class="ic">B</div><div><div class="t">Confirm your gate, once <span class="who">Passenger</span></div>
+          <p>If the pin is on a no-stop road, one card asks for the right entrance and shows the walk. It's saved to "Office", so it's never asked again.</p></div></div>
+        <div class="f"><div class="ic">C</div><div><div class="t">Gate shown to the rider <span class="who">Rider</span></div>
+          <p>The rider sees the gate pin, the approach road and a note in Bangla before accepting. If they end the trip far from the gate, the passenger is asked to confirm.</p></div></div>
+      </div>
+      <div class="rollout"><span class="s">① Backend fix</span><span class="ar">→</span><span class="s l">② Gate card + rider pin</span><span class="ar">→</span><span class="s l2">③ Learn from trips</span></div>
+    </section>
+  </div>
+
+  <div class="band">
+    <div class="blk">
+      <h4>Why management should approve it</h4>
+      <ul>
+        <li><b>It protects commuters, our most frequent riders.</b> A daily route that fails half the time teaches them to open Uber first. At 2 trips a day, that's ~22 bad drop-offs a month for one person.</li>
+        <li><b>It's small and low-risk.</b> It uses road attributes and trip GPS we already have, and step ① ships silently on the server.</li>
+        <li><b>It works everywhere, not just here.</b> Every venue next to a flyover or expressway has the same bug.</li>
+      </ul>
+    </div>
+    <div class="blk m">
+      <h4>How we'll know it worked</h4>
+      <ul>
+        <li><b>Primary:</b> drop-off error, the distance from where the trip ended to the confirmed destination. Target: median under 25 m.</li>
+        <li><b>Also:</b> "wrong drop-off" tickets, rider–passenger calls in the last 2 minutes, and 30-day commuter retention.</li>
+        <li><b>Guardrails:</b> rider trip time, fare and acceptance rate. 4-week A/B test in Dhaka.</li>
+      </ul>
+    </div>
+    <div class="blk q">
+      <h4>Open questions before this ships</h4>
+      <ul>
+        <li>How many Dhaka destinations snap to no-stop roads? One trip-log query sizes it.</li>
+        <li>Does our map provider give us bridge, layer and access tags, or must we derive them?</li>
+        <li>Can riders enter every gate (cantonment and DOHS rules)? Who checks gates that passengers suggest?</li>
+        <li>Does the rider need an incentive for the extra turn-in?</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="foot">
+    <span>Screenshots: my own trips, same destination, same time (9:25). Distances: OpenStreetMap (ODbL). Routes: OSRM. "~1 in 2" is my own commute log, not company data.</span>
+    <span>Clickable prototype: <a href="https://SafwatSameer.github.io/smart-dropoff/prototype/">SafwatSameer.github.io/smart-dropoff/prototype</a></span>
+  </div>
+</div>
+</div>
+<div class="toolbar">
+  <a href="../prototype/">Open the clickable prototype →</a>
+  <a class="alt" href="smart-dropoff-slide.png" download>Download PNG</a>
+  <a class="alt" href="smart-dropoff-slide.pdf" download>Download PDF</a>
+</div>
+</div>
+<script>
+(function(){
+  var exp = /[?&]export=1/.test(location.search);
+  if (exp) { document.body.classList.add('export'); document.documentElement.style.setProperty('--s', 1); return; }
+  function fit(){
+    var w = window.innerWidth - 32, h = window.innerHeight - 90;
+    var s = Math.min(w/1920, h/1080);
+    if (window.innerWidth < 700) s = w/1920;
+    document.documentElement.style.setProperty('--s', Math.max(0.15, s));
+  }
+  fit(); window.addEventListener('resize', fit);
+})();
+</script>
+</body>
+</html>

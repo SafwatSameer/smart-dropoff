@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Smart Drop-off Prototype</title>
+<meta name="description" content="Clickable prototype: Smart Drop-off puts riders at the right gate instead of the highway. POL Depo Canteen Noya Kutum Bari, Dhaka. By Syed Safwat Sameer.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<link rel="stylesheet" href="style.css">
+</head>
+<body data-mode="smart">
+
+<header class="bar">
+  <div class="brand">
+    <span class="logo" aria-hidden="true"></span>
+    <div><b>Smart Drop-off</b><small>Clickable prototype · Syed Safwat Sameer</small></div>
+  </div>
+  <div class="seg" role="group" aria-label="Compare experiences">
+    <button type="button" data-mode="today">Today's app</button>
+    <button type="button" data-mode="smart">With Smart Drop-off</button>
+  </div>
+  <nav class="links">
+    <a href="../slide/">One-slide proposal</a>
+    <button type="button" id="restart">Restart</button>
+  </nav>
+</header>
+
+<main class="stage">
+  <aside class="story">
+    <p class="eyebrow" id="modeEyebrow">With Smart Drop-off</p>
+    <h1>Drop me at the gate, not on the highway.</h1>
+    <p class="lede">Destination: <b>POL Depo Canteen Noya Kutum Bari</b>, Dhaka Cantonment. Today the pin lands on the <b>Dhaka Elevated Expressway</b>, so riders stop on <b>New Airport Road (N3)</b>, across the highway from the canteen.</p>
+
+    <section class="card">
+      <h2>Flow</h2>
+      <ol class="steps" id="steps"></ol>
+    </section>
+
+    <section class="card">
+      <h2>Behind the scenes <small>what the backend decides</small></h2>
+      <ul class="log" id="log"></ul>
+    </section>
+
+    <section class="card legend">
+      <h2>Map key</h2>
+      <ul>
+        <li><i class="k k-exp"></i>Elevated Expressway: motorcycles banned</li>
+        <li><i class="k k-n3"></i>New Airport Road (N3): divided highway</li>
+        <li><i class="k k-dohs"></i>Baridhara DOHS Main Rd / DOHS Bypass: the canteen's road, under the expressway</li>
+        <li><i class="k k-gate"></i>Canteen gate (correct drop-off)</li>
+        <li><i class="k k-bad"></i>Where riders stop today</li>
+      </ul>
+    </section>
+
+    <p class="fine">Map tiles © OpenStreetMap contributors. Road data and distances come from OpenStreetMap; routes from OSRM (fetched 27 Oct 2026). Rider name, fare and ETA are sample data. This is a concept prototype for a job assessment and is not affiliated with Pathao or Uber. <button type="button" class="linkish" id="resetAll">Reset saved gate</button></p>
+  </aside>
+
+  <section class="device" aria-label="Phone prototype">
+    <div class="phone">
+      <div class="screen">
+        <div id="map" aria-label="Map"></div>
+        <div class="status" aria-hidden="true"><span>9:25</span><span class="sig"><i></i><i></i><i></i><i></i> 71%</span></div>
+        <div class="topbar" id="topbar"></div>
+        <div class="sheet" id="sheet" aria-live="polite"></div>
+        <div class="overlay" id="overlay" hidden></div>
+        <div class="toast" id="toast" role="status" hidden></div>
+      </div>
+    </div>
+    <p class="hint">Tap through the phone. Use the switch at the top to compare with today's app.</p>
+  </section>
+</main>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="data.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
