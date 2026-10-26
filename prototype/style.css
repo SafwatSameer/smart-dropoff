@@ -301,6 +301,10 @@ body[data-mode="smart"] .bike{background:var(--good)}
 .banner.call .bi{background:#22c55e;color:#fff;animation:ring 1s ease-in-out infinite}
 .banner .bn{display:block;font-family:var(--bn);font-size:14px;color:#fff;margin-top:2px}
 .banner small{display:block;font-size:11.5px;color:#94a3b8;margin-top:1px}
+.banner .talk{display:block;margin-top:6px}
+.banner .talk i{font-style:normal;font-size:10.5px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:#86efac}
+.banner .talk + .talk i{color:#fca5a5}
+.roadtag.neutral{color:#334155;border-color:#cbd5e1}
 @keyframes ring{0%,100%{transform:rotate(0)}25%{transform:rotate(-12deg)}75%{transform:rotate(12deg)}}
 .mk .tag.rside{left:calc(50% + 10px);top:auto;bottom:8px;transform:none}
 .k-pin{width:12px;height:12px;border-radius:50%;background:var(--ink);box-shadow:0 0 0 2px #fff,0 0 0 3px var(--ink)}

@@ -5,7 +5,8 @@
   var D = window.SD_DATA;
   var $ = function (s) { return document.querySelector(s); };
   var MS_PER_M = 8.5;             // trip animation speed (~12 s for the whole ride)
-  var TIP_EXAMPLE = 'Small road under the expressway. Canteen is on the left.';
+  var TIP_EXAMPLE = 'Turn left at Shewra Bottola, onto the small road under the expressway.';
+  var TURN = D.routeSmart.path[38];  // the left turn off the highway, near Shewra Bottola
   var BEAT_MS = 2250;             // pace of the 'finding the route' steps (4 beats = 9 s)
 
   /* ---------- geometry ---------- */
@@ -90,7 +91,7 @@
   }
   function renderLog() {
     $('#rule').innerHTML = S.mode === 'smart'
-      ? '<b>Smart rule:</b> route to the place\'s drop-off point, not the pin. The drop-off point is learned from where past trips ended without a call or a "wrong spot" tap. New places start from the map\'s best guess and improve with every trip.'
+      ? '<b>Smart rule:</b> route to the place\'s drop-off point, not the pin. The drop-off point is learned from where past trips ended well: close to the place, with passengers tapping "right spot". New places start from the map\'s best guess and improve with every trip.'
       : '<b>Today\'s rule:</b> route to the pin, moved onto the nearest road line. Here that line is the expressway above the canteen\'s road, so the route falls back to the highway. The pin is right; the route is not.';
     $('#log').innerHTML = S.log.length
       ? S.log.map(function (l) { return '<li class="' + l.kind + '">' + l.html + '</li>'; }).join('')
@@ -266,7 +267,7 @@
       addMarker(pin('#0f172a', 'Your pin: POL Depo Canteen'), D.canteen, 'bottom');
     }
 
-    if (st === 'trip') return; // camera follows the bike
+    if (st === 'trip') { addMarker(el('roadtag neutral', 'Shewra Bottola'), TURN, 'bottom'); return; } // camera follows the bike
     if (st === 'done') {
       setLine('route', null);
       if (smart) {
@@ -324,7 +325,7 @@
   function tipbox() {
     return '<div class="tipbox"><div class="tl"><label for="tip">Landmark for your rider <span>(optional)</span></label>' +
       (S.tip ? '' : '<button type="button" class="example" data-act="example">Use example</button>') + '</div>' +
-      '<textarea id="tip" maxlength="120" placeholder="What you\'d say on the phone, e.g. opposite the mosque">' + esc(S.tip) + '</textarea></div>' +
+      '<textarea id="tip" maxlength="120" placeholder="What you\'d tell the rider, e.g. turn left at the mosque">' + esc(S.tip) + '</textarea></div>' +
       '<label class="remember"><input type="checkbox" id="remember"' + (S.remember ? ' checked' : '') + '>Remember for my next trips</label>';
   }
   function results() {
@@ -357,13 +358,13 @@
     locate: function () {
       var smart = S.mode === 'smart';
       var lines = smart
-        ? ['Your pin is on the canteen', 'Checking where past trips here ended', 'Drop-off point: where trips end without a call']
+        ? ['Your pin is on the canteen', 'Checking where past trips here ended', 'Drop-off point: where trips end well']
         : ['Your pin is on the canteen', 'Pin moved to the nearest road line: the expressway', 'Bikes can\'t use it, so the route ends on the highway'];
       return {
         top: top(false, smart ? 'Smart Drop-off' : 'What happens behind the map', 'POL Depo Canteen Noya Kutum Bari'),
         sheet: '<div class="grab"></div><h3>' + (smart ? 'Finding the drop-off point…' : 'Finding a route…') + '</h3>' +
           '<ol class="beats">' + lines.map(function (t, i) { return '<li class="' + (i < S.beat ? 'done' : i === S.beat ? 'now' : '') + (smart ? '' : ' bad') + '">' + t + '</li>'; }).join('') + '</ol>' +
-          (smart && S.beat >= 1 ? '<div class="legend"><span><i class="dot bad"></i>Rider called / "wrong spot"</span><span><i class="dot good"></i>No call, right spot</span><em>Sample data</em></div>' : '')
+          (smart && S.beat >= 1 ? '<div class="legend"><span><i class="dot bad"></i>Ended across the road / "wrong spot"</span><span><i class="dot good"></i>Ended at the gate / "right spot"</span><em>Sample data</em></div>' : '')
       };
     },
 
@@ -374,7 +375,7 @@
         top: top(true, 'Drop-off for', 'POL Depo Canteen Noya Kutum Bari'),
         sheet: '<div class="grab"></div>' +
           '<h3>Drop-off point: the canteen gate</h3>' +
-          '<p class="sub">Trips here that ended without a call stopped on the road under the expressway. Your route goes there, not to the pin.</p>' +
+          '<p class="sub">Past trips that ended well stopped on the road under the expressway. Your route goes there, not to the pin.</p>' +
           tipbox() +
           '<button class="btn" type="button" data-act="confirm">Confirm drop-off</button>' +
           '<button class="linkbtn" type="button" data-act="pick">Choose another spot</button>'
@@ -427,9 +428,9 @@
         top: top(false, 'Rider found', smart ? S.spot.en + ' · POL Depo Canteen' : 'POL Depo Canteen Noya Kutum Bari'),
         sheet: '<div class="grab"></div>' +
           '<div class="driver"><div class="avatar">K</div><div class="grow"><b>Karim</b> <span style="color:#f59e0b">★</span> 4.9<small>Bike · DHAKA METRO-HA 12-3456</small></div><div class="eta">2 min<small>away</small></div></div>' +
-          (smart ? '<div class="note good" style="margin-top:12px"><span class="ni">✓</span><span>Karim got the drop-off point' + (S.tip ? ' and your landmark' : '') + ' with the request. No call needed.</span></div>' +
+          (smart ? '<div class="note good" style="margin-top:12px"><span class="ni">✓</span><span>Karim got the drop-off point' + (S.tip ? ' and your landmark' : '') + ' with the request, so he knows the turn before you set off.</span></div>' +
                    '<button class="btn ghost" type="button" data-act="rider">See Karim\'s screen</button>'
-                 : '<div class="note warn" style="margin-top:12px"><span class="ni">📞</span><span>Like every trip, you explain the way on the phone.</span></div>') +
+                 : '') +
           '<button class="btn" type="button" data-act="start">Start ride</button>' +
           '<p class="sub center" style="margin:8px 0 0">Demo skips the pickup.</p>'
       };
@@ -451,8 +452,8 @@
         return {
           top: top(false, 'Trip complete', 'POL Depo Canteen Noya Kutum Bari'),
           sheet: '<div class="grab"></div><h3>You have arrived</h3>' +
-            '<p class="sub">That\'s what the app says. Even after your call, the rider followed the route to the highway.</p>' +
-            '<div class="vs"><div class="t"><b>Today</b>Route goes to the pin, snapped onto the wrong road. You explain on every call.</div><div class="s"><b>Smart Drop-off</b>Route goes to the drop-off point learned from past trips. No call.</div></div>' +
+            '<p class="sub">That\'s what the app says. Even when you asked him to turn left, the rider followed the app to the highway.</p>' +
+            '<div class="vs"><div class="t"><b>Today</b>Route goes to the pin, snapped onto the wrong road. You argue at the turn.</div><div class="s"><b>Smart Drop-off</b>Route goes to the drop-off point learned from past trips. It turns by itself.</div></div>' +
             '<button class="btn" type="button" data-act="toSmart" style="background:var(--good)">See the fix →</button>'
         };
       }
@@ -465,7 +466,7 @@
           '<p class="sub">' + (hw ? 'On the highway, as you chose.' : 'A few steps to the canteen. No road to cross.') + '</p>' +
           '<div class="lbl" style="margin-top:4px">Was this the right spot?</div>' +
           '<div class="thumbs"><button type="button" data-fb="yes" aria-pressed="' + (S.feedback === 'yes') + '">👍 Yes</button><button type="button" data-fb="no" aria-pressed="' + (S.feedback === 'no') + '">👎 No</button></div>' +
-          (!hw ? '<div class="note good" style="margin-top:10px"><span class="ni">📵</span><span>No call needed. The route ended at the drop-off point' + (S.tip ? ', and Karim had your landmark' : '') + '.</span></div>' : '') +
+          (!hw ? '<div class="note good" style="margin-top:10px"><span class="ni">✓</span><span>No need to direct the rider. The route ended at the drop-off point' + (S.tip ? ', and Karim had your landmark' : '') + '.</span></div>' : '') +
           savedLine +
           '<button class="btn" type="button" data-act="finish">Done</button>' +
           '<button class="linkbtn" type="button" data-act="toToday">Compare with today\'s app</button>'
@@ -505,16 +506,19 @@
     var path = routeFor(), cum = cumulative(path), total = cum[cum.length - 1];
     var smart = S.mode === 'smart';
     var turnD = smart && S.spot.kind === 'road' ? cumulative(D.routeSmart.path)[38] : null;
+    var turnToday = !smart ? cumulative(D.routeToday.path)[38] : null;   // same turn point on today's route
     bikeMarker = new maplibregl.Marker({ element: el('bike', BIKE) }).setLngLat(ll(path[0])).addTo(map);
     if (ready) map.setPadding({ top: 120, bottom: sheetH() + 20, left: 0, right: 0 });
     var zoom = 15.6, d = 0, last = performance.now(), stage = 0;
+    var held = false, holdUntil = 0;   // Today: the bike slows at the turn while you talk
     log('', smart ? '<b>Trip started.</b> Karim\'s navigation goes to the drop-off point, not to the pin.'
                   : '<b>Trip started.</b> Navigation goes to where the pin was snapped: the highway.');
     anim = { t: 0 };
     (function tick() {
       if (!anim) return;
       var now = performance.now();
-      d = Math.min(total, d + (now - last) / MS_PER_M); last = now;
+      if (holdUntil && now < holdUntil) { last = now; } else { d = Math.min(total, d + (now - last) / MS_PER_M); last = now; }
+      if (!smart && !held && d >= turnToday) { held = true; holdUntil = now + 3500; d = turnToday; }
       var at = pointAt(path, cum, d), left = total - d;
       bikeMarker.setLngLat(ll(at.pt)); S.bikeAt = at.pt;
       setLine('trail', path.slice(0, at.i).concat([at.pt]));
@@ -524,8 +528,15 @@
       var p = $('#prog'); if (p) p.style.width = (d / total * 100).toFixed(1) + '%';
       var tl = $('#tripLeft'); if (tl) tl.textContent = left > 40 ? Math.round(left / 10) * 10 + ' m to go' : 'Arriving';
       var te = $('#tripEta'); if (te) te.textContent = Math.max(1, Math.ceil(left / 1390 * 8)) + ' min';
+      if (!smart && stage === 0 && d > turnToday - 140) {
+        stage = 1;
+        banner('call', '🗣', 'Near Shewra Bottola',
+          '<span class="talk"><i>You</i><span class="bn">"ভাই, একটু বামে যান।"</span><small>"Bhai, kindly go left."</small></span>' +
+          '<span class="talk"><i>Karim</i><span class="bn">"ভাই, অ্যাপে তো দেখাচ্ছে আপনি সোজা রাস্তায় লোকেশন দিয়েছেন।"</span><small>"Bhai, the app shows you gave the location straight down the road."</small></span>');
+        log('bad', '<b>At the turn, the passenger asks the rider to go left.</b> The rider follows the app, which says straight on. The passenger\'s knowledge never reaches the app.');
+      }
       if (smart && turnD) {
-        if (stage === 0 && d > turnD - 380) { stage = 1; banner('good', '↰', 'Karim turns off the highway here', 'The route leads to the drop-off point, on the road under the expressway.'); log('good', '<b>Turn reminder sent to Karim</b> just before the turn off the highway.'); }
+        if (stage === 0 && d > turnD - 380) { stage = 1; banner('good', '↰', 'Karim turns left at Shewra Bottola', 'By himself. The route already goes to the drop-off point, so you don\'t have to direct him.'); log('good', '<b>Turn reminder sent to Karim</b> just before the turn off the highway.'); }
         if (stage === 1 && d > turnD + 30) { stage = 2; banner('good', '✓', 'Off the highway', 'Heading straight to your drop-off spot.'); }
       }
       if (d >= total) { stopAnim(); arrive(); return; }
@@ -535,7 +546,7 @@
   function arrive() {
     if (bikeMarker) { bikeMarker.remove(); bikeMarker = null; }
     if (S.mode === 'smart') {
-      log('good', '<b>Trip ended at the drop-off point, with no call.</b> This trip is added to the data, so the drop-off point stays right.');
+      log('good', '<b>Trip ended at the drop-off point.</b> This trip is added to the data, so the drop-off point stays right.');
       if (S.remember && !S.usedSaved) {
         S.saved = { spot: S.spot, tip: S.tip };
         store(S.saved);
@@ -561,7 +572,7 @@
           : '<div class="rcard warn"><div class="t">Reminder</div><div class="bn">এক্সপ্রেসওয়ের নিচের রাস্তায় নামাবেন।</div><small>Drop off on the road under the expressway.</small></div>') +
       '<button class="raccept" type="button" data-act="closeRider">গ্রহণ করুন<small>Accept</small></button>';
     r.hidden = false;
-    log('', '<b>Rider\'s ride request shows</b> the drop-off point, the passenger\'s landmark, and a short reminder in Bangla. So he doesn\'t need to call.');
+    log('', '<b>Rider\'s ride request shows</b> the drop-off point, the passenger\'s landmark, and a short reminder in Bangla. So he knows the turn before the trip starts.');
   }
 
   /* ---------- "finding the route" steps ---------- */
@@ -610,8 +621,8 @@
         return go('ride');
       }
       S.spot = AUTO_SPOT;
-      beats(['<b>Past trips to this place ended in two clusters</b> (sample data): on the highway, usually with a rider call or a "wrong spot" tap, and on the road under the expressway, without a call.',
-             '<b>Drop-off point = the cluster where trips end without a call:</b> the canteen gate. The route goes there instead of the pin.'], 'spot');
+      beats(['<b>Past trips to this place ended in two clusters</b> (sample data): across the highway, often marked "wrong spot", and on the road under the expressway, at the gate, marked "right spot".',
+             '<b>Drop-off point = the cluster where trips end well:</b> the canteen gate. The route goes there instead of the pin.'], 'spot');
     },
     back: function () {
       stopAnim(); clearTimeout(beatTimer);
@@ -643,8 +654,6 @@
         if (S.step !== 'search') return;
         if (S.mode === 'smart') { log('good', '<b>Ride request sent with the drop-off point' + (S.tip ? ' and landmark' : '') + '.</b> The rider knows where to stop before accepting.'); go('found'); return; }
         go('found');
-        banner('call', '📞', 'Karim is calling…', '<span class="bn">"ভাই, কোথায় নামবেন?"</span><small>"Bhai, where exactly are you getting off?" — You: "Under the expressway, the small road…"</small>');
-        log('warn', '<b>Rider calls right after accepting</b> to ask where to stop. The passenger explains by voice, and the app learns nothing from it.');
       }, 1500);
     },
     rider: openRider,
