@@ -73,10 +73,11 @@
   var AUTO_SPOT = spotFrom({ kind: 'road', snap: D.gate }, 'auto');
 
   /* ---------- state ---------- */
-  function load() { try { return JSON.parse(localStorage.getItem('sd2-saved') || 'null'); } catch (e) { return null; } }
-  // ?fresh = demo link: forget any saved spot so the walkthrough always starts clean
-  if (/[?&]fresh\b/.test(location.search)) { try { localStorage.removeItem('sd2-saved'); } catch (e) { /* private mode */ } }
-  function store(v) { try { if (v) localStorage.setItem('sd2-saved', JSON.stringify(v)); else localStorage.removeItem('sd2-saved'); } catch (e) { /* private mode */ } }
+  // The saved drop-off point lasts for this visit only, so every page load shows the full
+  // "Finding the drop-off point" flow. (Also clears copies older versions kept in the browser.)
+  try { localStorage.removeItem('sd2-saved'); } catch (e) { /* private mode */ }
+  function load() { return null; }
+  function store() { /* in-memory only: S.saved holds it until the page is reloaded */ }
   var S = {
     mode: /today/.test(location.hash) ? 'today' : 'smart',
     step: 'home', saved: load(), spot: AUTO_SPOT, tip: '', remember: true, usedSaved: false,
