@@ -6,7 +6,7 @@
   var $ = function (s) { return document.querySelector(s); };
   var MS_PER_M = 8.5;             // trip animation speed (~12 s for the whole ride)
   var TIP_EXAMPLE = 'Small road under the expressway. Canteen is on the left.';
-  var BEAT_MS = 1500;             // pace of the 'finding the route' steps
+  var BEAT_MS = 2250;             // pace of the 'finding the route' steps (4 beats = 9 s)
 
   /* ---------- geometry ---------- */
   var RAD = Math.PI / 180, R = 6371000;
